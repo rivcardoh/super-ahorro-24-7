@@ -3,19 +3,20 @@
 <div class="col-md-12">
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title">Nueva Categoria</h3>
+            <h3 class="card-title">Editar Categoria: {{$categoria->categoria}}</h3>
         </div>
 
-        <form action="{{route('categoria.store')}}" method="POST" class="form">
+        <form action="{{route('categoria.update' , $categoria->id_categoria)}}" method="POST" class="form">
             @csrf
+            @method('PUT')
             <div class="card-body">
                 <div class="form-group">
                     <label for="categoria">Nombre</label>
-                    <input type="text" class="form-control" name="categoria" id="categoria" placeholder="Ingrese el nombre de la categoria">
+                    <input type="text" class="form-control" name="categoria" value="{{$categoria->categoria}}" id="categoria" placeholder="Ingrese el nombre de la categoria">
                 </div>
                 <div class="form-group">
                     <label for="categoria">Descripcion</label>
-                    <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese la descripcion">
+                    <input type="text" class="form-control" name="descripcion"  value="{{$categoria->descripcion}}" id="descripcion" placeholder="Ingrese la descripcion">
                 </div>
                 <div class="card-footer">
                     <div>
