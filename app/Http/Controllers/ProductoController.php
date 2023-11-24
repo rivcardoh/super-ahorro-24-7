@@ -35,7 +35,7 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        $categorias=DB::table('categoria')->where('estado','=')->get();
+        $categorias=DB::table('categoria')->where('estado','=', '1')->get();
         return view("almacen.producto.create",["categorias"=>$categorias]);
     }
 
@@ -51,11 +51,14 @@ class ProductoController extends Controller
         $producto->stock=$request->input('stock');
         $producto->descripcion=$request->input('descripcion');
         $producto->estado='Activo';
-        if ($request->hasFile('imagen')) {
+        if ($request->hasFile("imagen")) {
             $imagen =$request->file("imagen");
             $nombreimagen= Str::slug($request->nombre).".".$imagen->guessExtension();
             $ruta = public_path("/imagenes/productos");
-            copy($imagen->getRealPath(),$ruta.$nombreimagen);           
+
+            copy($imagen->getRealPath(),$ruta.$nombreimagen);  
+            
+            $producto->imagen=$nombreimagen;
         }
         $producto->save();
         return redirect()->route('producto.index');
@@ -85,18 +88,20 @@ class ProductoController extends Controller
      */
     public function update(ProductoFormRequest $request,$id)
     {
-        $producto=new Producto();
+        $producto= Producto::findOrFail($id);
         $producto->id_categoria=$request->input('id_categoria');
         $producto->codigo=$request->input('codigo');
         $producto->nombre=$request->input('nombre');
         $producto->stock=$request->input('stock');
         $producto->descripcion=$request->input('descripcion');
         
-        if ($request->hasFile('imagen')) {
+        if ($request->hasFile("imagen")) {
             $imagen =$request->file("imagen");
             $nombreimagen= Str::slug($request->nombre).".".$imagen->guessExtension();
             $ruta = public_path("/imagenes/productos");
-            copy($imagen->getRealPath(),$ruta.$nombreimagen);           
+            copy($imagen->getRealPath(),$ruta.$nombreimagen);  
+            
+            $producto->imagen=$nombreimagen;
         }
         $producto->update();
         return redirect()->route('producto.index');
