@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-11-2023 a las 00:15:35
+-- Tiempo de generación: 26-11-2023 a las 16:00:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.1.25
 
@@ -97,8 +97,7 @@ CREATE TABLE `persona` (
   `id_persona` int(11) NOT NULL,
   `tipo_persona` varchar(20) DEFAULT NULL,
   `nombre` varchar(100) DEFAULT NULL,
-  `tipo_documento` varchar(20) DEFAULT NULL,
-  `num_documento` varchar(15) DEFAULT NULL,
+  `ci` varchar(20) DEFAULT NULL,
   `direccion` varchar(70) DEFAULT NULL,
   `telefono` varbinary(15) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
@@ -109,9 +108,9 @@ CREATE TABLE `persona` (
 -- Volcado de datos para la tabla `persona`
 --
 
-INSERT INTO `persona` (`id_persona`, `tipo_persona`, `nombre`, `tipo_documento`, `num_documento`, `direccion`, `telefono`, `email`, `estado`) VALUES
-(1, 'cliente', 'Pedro Snchez', 'ASDAS', '11232132', 'AV pirai', 0x33322451, 'hola@hola.com', 1),
-(2, 'proveedor', 'Julia Perez', '123123s', '211', NULL, 0x33235534, 'hola@hola.com', 1);
+INSERT INTO `persona` (`id_persona`, `tipo_persona`, `nombre`, `ci`, `direccion`, `telefono`, `email`, `estado`) VALUES
+(1, 'cliente', 'Pedro Snchez', 'ASDAS', 'AV pirai', 0x33322451, 'hola@hola.com', 1),
+(3, 'Cliente', 'Juan Roca', '54654564sc', 'Av roca y coronado', 0x3737353535353333, 'hola@hola.com', 0);
 
 -- --------------------------------------------------------
 
@@ -226,7 +225,7 @@ ALTER TABLE `ingreso`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
