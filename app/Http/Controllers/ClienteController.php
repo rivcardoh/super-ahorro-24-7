@@ -17,6 +17,7 @@ class ClienteController extends Controller
             $query = trim($request->get('texto'));
             $clientes = DB::table('persona')->where('nombre', 'LIKE', '%' . $query . '%')
                 ->where('tipo_persona', '=', 'Cliente')
+                ->where('estado', '=', '1')
                 ->orderBy('id_persona', 'desc')
                 ->paginate(7);
             return view('ventas.cliente.index', ["cliente" => $clientes, "texto" => $query]);
@@ -37,13 +38,13 @@ class ClienteController extends Controller
     public function store(ClienteFormRequest $request)
     {
         $cliente=new Cliente();
-        $cliente->tipo_persona=$request->get('tipo_persona');
-        $cliente->nombre=$request->get('nombre');
-        $cliente->tipo_documento=$request->get('tipo_documento');
-        $cliente->num_documento=$request->get('num_documento');
-        $cliente->direccion=$request->get('direccion');
-        $cliente->telefono=$request->get('telefono');
-        $cliente->email=$request->get('email');
+        $cliente->tipo_persona='Cliente';
+        $cliente->nombre=$request->input('nombre');
+        $cliente->ci=$request->input('ci');
+        $cliente->direccion=$request->input('direccion');
+        $cliente->telefono=$request->input('telefono');
+        $cliente->email=$request->input('email');
+        $cliente->estado='1';
         $cliente->save();
         return Redirect::to('ventas/cliente');
     }
@@ -70,14 +71,12 @@ class ClienteController extends Controller
      */
     public function update(ClienteFormRequest $request, $id)
     {
-        $cliente=new Cliente();
-        $cliente->tipo_persona=$request->get('tipo_persona');
-        $cliente->nombre=$request->get('nombre');
-        $cliente->tipo_documento=$request->get('tipo_documento');
-        $cliente->num_documento=$request->get('num_documento');
-        $cliente->direccion=$request->get('direccion');
-        $cliente->telefono=$request->get('telefono');
-        $cliente->email=$request->get('email');
+        $cliente=Cliente::findOrFail($id);
+        $cliente->nombre=$request->input('nombre');
+        $cliente->ci=$request->input('ci');
+        $cliente->direccion=$request->input('direccion');
+        $cliente->telefono=$request->input('telefono');
+        $cliente->email=$request->input('email');
         $cliente->update();
         return Redirect::to('ventas/cliente');
     }

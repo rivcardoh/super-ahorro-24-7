@@ -18,11 +18,11 @@ class Cliente extends Model
     protected $fillable= [
         'tipo_persona',
         'nombre',
-        'tipo_documento',
-        'num_documento',
+        'ci',
         'direccion',
         'telefono',
-        'email'
+        'email',
+        'estado'
     ];
 
     protected $guarded = [
