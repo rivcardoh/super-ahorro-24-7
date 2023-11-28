@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/super-ahorro-24-7/public/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/super-ahorro-24-7/public/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/super-ahorro-24-7/public/dist/css/bootstrap-select.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="/super-ahorro-24-7/public/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Daterange picker -->
@@ -265,6 +266,9 @@
 <!-- jQuery UI 1.11.4 -->
 <script src="/super-ahorro-24-7/public/plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+
+@stack('scripts')
+
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
@@ -279,6 +283,7 @@
 <!-- daterangepicker -->
 <script src="/super-ahorro-24-7/public/plugins/moment/moment.min.js"></script>
 <script src="/super-ahorro-24-7/public/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/super-ahorro-24-7/public/dist/js/bootstrap-select.min.js"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="/super-ahorro-24-7/public/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <!-- Summernote -->

@@ -67,7 +67,7 @@ class IngresoController extends Controller
             $ingreso->estado='A';
             $ingreso->save();
 
-            $id_producto = $request->get('id_producto');
+            $id_producto = $request->get('idarticulo');
             $cantidad = $request->get('cantidad');
             $precio_compra = $request->get('precio_compra');
             $precio_venta= $request->get('precio_venta');
