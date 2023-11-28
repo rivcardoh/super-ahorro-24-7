@@ -21,18 +21,17 @@ class IngresoController extends Controller
      */
     public function index(Request $request)
     {
-        if($request)
-        {
-        $query = trim($request->get('texto'));
-        $ingresos = DB::table('ingreso as i')
-        ->join('persona as p', 'i.id_proveedor','=','id_persona')
-        ->join('detalle_ingreso as di', 'di.id_ingreso', '=', 'i.id_ingreso')
-        ->select('i.id_ingreso','i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado', DB::raw('sum(di.cantidad*di.precio_compra)as total'))
-        ->where('i.num_comprobante', 'LIKE', "%". $query.'%')
-        ->groupBy('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado')
-        ->orderBy('i.id_ingreso', 'desc')
-        ->paginate(15);
-        return view('compras.ingreso.index',["ingresos"=>$ingresos,"texto"=>$query]);
+        if ($request) {
+            $query = trim($request->get('texto'));
+            $ingresos = DB::table('ingreso as i')
+                ->join('persona as p', 'i.id_proveedor', '=', 'id_persona')
+                ->join('detalle_ingreso as di', 'di.id_ingreso', '=', 'i.id_ingreso')
+                ->select('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado', DB::raw('sum(di.cantidad*di.precio_compra)as total'))
+                ->where('i.num_comprobante', 'LIKE', "%" . $query . '%')
+                ->groupBy('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado')
+                ->orderBy('i.id_ingreso', 'desc')
+                ->paginate(15);
+            return view('compras.ingreso.index', ["ingresos" => $ingresos, "texto" => $query]);
         }
     }
 
@@ -41,13 +40,13 @@ class IngresoController extends Controller
      */
     public function create()
     {
-       $personas=DB::table('persona')->where('tipo_persona','=', 'Proveedor')->get();
-       $ingreso=Ingreso::all();
-        $productos=DB::table('productos as p')
-            ->select(DB::raw('CONCAT(p.codigo, " ", p.nombre)AS Articulo'),'p.id_producto', 'p.stock')
+        $personas = DB::table('persona')->where('tipo_persona', '=', 'Proveedor')->get();
+        $ingreso = Ingreso::all();
+        $productos = DB::table('productos as p')
+            ->select(DB::raw('CONCAT(p.codigo, " ", p.nombre)AS Articulo'), 'p.id_producto', 'p.stock')
             ->where('p.estado', '=', 'Activo')
             ->get();
-            return view("compras.ingreso.create",["personas"=>$personas,"productos"=>$productos, "ingreso"=>$ingreso]);
+        return view("compras.ingreso.create", ["personas" => $personas, "productos" => $productos, "ingreso" => $ingreso]);
     }
 
     /**
@@ -57,39 +56,38 @@ class IngresoController extends Controller
     {
         try {
             DB::beginTransaction();
-            $ingreso=new Ingreso;
-            $ingreso->id_proveedor=$request->get('id_proveedor');
-            $ingreso->tipo_comprobante=$request->get('tipo_comprobante');
-            $ingreso->num_comprobante=$request->get('num_comprobante');
-            $mytime= Carbon::now('America/La_Paz');
-            $ingreso->fecha_hora=$mytime->toDateTimeString();
-            $ingreso->impuesto='13';
-            $ingreso->estado='A';
+            $ingreso = new Ingreso;
+            $ingreso->id_proveedor = $request->get('id_proveedor');
+            $ingreso->tipo_comprobante = $request->get('tipo_comprobante');
+            $ingreso->num_comprobante = $request->get('num_comprobante');
+            $mytime = Carbon::now('America/La_Paz');
+            $ingreso->fecha_hora = $mytime->toDateTimeString();
+            $ingreso->impuesto = '13';
+            $ingreso->estado = 'A';
             $ingreso->save();
 
             $id_producto = $request->get('idarticulo');
             $cantidad = $request->get('cantidad');
             $precio_compra = $request->get('precio_compra');
-            $precio_venta= $request->get('precio_venta');
+            $precio_venta = $request->get('precio_venta');
 
             $cont = 0;
 
-            while ($cont <count($id_producto)) {
+            while ($cont < count($id_producto)) {
                 $detalle = new DetalleIngreso();
-                $detalle ->id_ingreso= $ingreso ->id_ingreso;
-                $detalle ->id_producto=$id_producto[$cont];
-                $detalle ->cantidad = $$cantidad[$cont];
-                $detalle ->precio_compra = $precio_compra[$cont];
-                $detalle ->precio_venta= $precio_venta[$cont];
-                $detalle ->save();
+                $detalle->id_ingreso = $ingreso->id_ingreso;
                 
-                $cont = $cont+1;
+                $detalle->id_producto = $id_producto[$cont];
+                $detalle->cantidad = $$cantidad[$cont];
+                $detalle->precio_compra = $precio_compra[$cont];
+                $detalle->precio_venta = $precio_venta[$cont];
+                $detalle->save();
+
+                $cont = $cont + 1;
             }
 
             DB::commit();
-
-        } catch (\Exception $e) 
-        {
+        } catch (\Exception $e) {
             DB::rollBack();
         }
         return Redirect::to('compras/ingreso');
@@ -100,21 +98,21 @@ class IngresoController extends Controller
      */
     public function show(string $id)
     {
-        $ingreso=DB::table('ingreso as i')
-        ->join('persona as p', 'i.id_proveedor', '=', 'p.id_persona')
-        ->join('detalle_ingreso as di', 'i.id_ingreso', '=', 'di.id_ingreso')
-        ->select('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado', DB::raw('sum(di.cantidad*di.precio_compra) as total'))
-        ->where('i.id_ingreso', '=', $id)
-        ->groupBy('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado')
-        ->orderBy('i.id_ingreso', 'desc')
-        ->first();
+        $ingreso = DB::table('ingreso as i')
+            ->join('persona as p', 'i.id_proveedor', '=', 'p.id_persona')
+            ->join('detalle_ingreso as di', 'i.id_ingreso', '=', 'di.id_ingreso')
+            ->select('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado', DB::raw('sum(di.cantidad*di.precio_compra) as total'))
+            ->where('i.id_ingreso', '=', $id)
+            ->groupBy('i.id_ingreso', 'i.fecha_hora', 'p.nombre', 'i.tipo_comprobante', 'i.num_comprobante', 'i.impuesto', 'i.estado')
+            ->orderBy('i.id_ingreso', 'desc')
+            ->first();
 
-        $detalles=DB::table('detalle_ingreso as d')
-        ->join('producto as p','d.id_producto', '=', 'p.id_producto')
-        ->select('a.nombre as producto', 'd.cantidad', 'd.precio_compra', 'd.precio_venta')
-        ->where('d.ingreso', '=', $id)
-        ->get();
-        return view("compras.ingreso.show",["ingreso"=>$ingreso, "detalles"=>$detalles]);
+        $detalles = DB::table('detalle_ingreso as d')
+            ->join('producto as p', 'd.id_producto', '=', 'p.id_producto')
+            ->select('a.nombre as producto', 'd.cantidad', 'd.precio_compra', 'd.precio_venta')
+            ->where('d.ingreso', '=', $id)
+            ->get();
+        return view("compras.ingreso.show", ["ingreso" => $ingreso, "detalles" => $detalles]);
     }
 
     /**
@@ -138,8 +136,8 @@ class IngresoController extends Controller
      */
     public function destroy($id)
     {
-        $ingreso=Ingreso::findOrFail($id);
-        $ingreso->estado='C';
+        $ingreso = Ingreso::findOrFail($id);
+        $ingreso->estado = 'C';
         $ingreso->update();
         return Redirect::to('compras/ingreso');
     }

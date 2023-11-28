@@ -18,7 +18,7 @@ class Ingreso extends Model
         'id_proveedor',
         'tipo_comprobante',
         'num_comprobante',
-        'fecha_alta',
+        'fecha_hora',
         'impuesto',
         'estado'
     ];

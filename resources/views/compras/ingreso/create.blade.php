@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="proveedor">Proveedor</label>
+                            <label for="id_proveedor">Proveedor</label>
                             <select name="id_proveedor" class="form-control" id="id_proveedor">
                                 @foreach($personas as $persona)
                                 <option value="{{$persona->id_persona}}">{{$persona->nombre}}</option>
@@ -23,13 +23,13 @@
                     <div class="col-3">
                         <div class="form-group">
                             <label for="tipo_comprobante">Tipo comprobante</label>
-                            <input type="text" class="form-control" name="tipo_comprobante" id="ci" placeholder="Ingrese el CI">
+                            <input type="text" class="form-control" name="tipo_comprobante" id="ci" placeholder="">
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="form-group">
                             <label for="num_comprobante">Numero comprobante</label>
-                            <input type="text" class="form-control" name="num_comprobante" id="num_comprobante" placeholder="Ingrese la direccion">
+                            <input type="text" class="form-control" name="num_comprobante" id="num_comprobante" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,6 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                           
                             <td>
                                 <h4 id="total">$ 0.00</h4>
                             </td>
@@ -106,10 +105,10 @@
                     <button type="reset" class="btn btn-danger me-1 mb-1">Cancelar</button>
                 </div>
             </div>
-
+        </form>
     </div>
 
-    </form>
+    
 </div>
 </div>
 @push('scripts')
