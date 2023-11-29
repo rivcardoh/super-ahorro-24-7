@@ -56,39 +56,40 @@ class IngresoController extends Controller
     {
         try {
             DB::beginTransaction();
-            $ingreso = new Ingreso;
+        
+            // Guardar en la tabla Ingreso
+            $ingreso = new Ingreso();
             $ingreso->id_proveedor = $request->get('id_proveedor');
             $ingreso->tipo_comprobante = $request->get('tipo_comprobante');
             $ingreso->num_comprobante = $request->get('num_comprobante');
-            $mytime = Carbon::now('America/La_Paz');
-            $ingreso->fecha_hora = $mytime->toDateTimeString();
+            $ingreso->fecha_hora = Carbon::now('America/La_Paz')->toDateTimeString();
             $ingreso->impuesto = '13';
             $ingreso->estado = 'A';
             $ingreso->save();
-
+        
+            // Guardar en la tabla DetalleIngreso
+            $detalles = [];
             $id_producto = $request->get('idarticulo');
-            $cantidad = $request->get('cantidad');
-            $precio_compra = $request->get('precio_compra');
-            $precio_venta = $request->get('precio_venta');
-
-            $cont = 0;
-
-            while ($cont < count($id_producto)) {
+            $cantidades = $request->get('cantidad');
+            $precios_compra = $request->get('precio_compra');
+            $precios_venta = $request->get('precio_venta');
+        
+            foreach ($id_producto as $index => $id) {
                 $detalle = new DetalleIngreso();
                 $detalle->id_ingreso = $ingreso->id_ingreso;
-                
-                $detalle->id_producto = $id_producto[$cont];
-                $detalle->cantidad = $$cantidad[$cont];
-                $detalle->precio_compra = $precio_compra[$cont];
-                $detalle->precio_venta = $precio_venta[$cont];
+                $detalle->id_producto = $id;
+                $detalle->cantidad = $cantidades[$index];
+                $detalle->precio_compra = $precios_compra[$index];
+                $detalle->precio_venta = $precios_venta[$index];
                 $detalle->save();
-
-                $cont = $cont + 1;
+                $detalles[] = $detalle;
             }
-
+        
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            // Manejar la excepción, por ejemplo, puedes loguear el error o devolver un mensaje de error al usuario.
+            return response()->json(['error' => 'Error al procesar la solicitud.'], 500);
         }
         return Redirect::to('compras/ingreso');
     }

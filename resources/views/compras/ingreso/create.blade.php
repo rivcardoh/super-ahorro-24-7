@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-2">
                         <div class="form-group">
-                            <label for="pventa">Precio Venta|</label>
+                            <label for="pventa">Precio Venta</label>
                             <input type="text" class="form-control" name="pprecio_venta" id="pprecio_venta" step="0.01" min="0" placeholder="P. venta">
                         </div>
                     </div>
@@ -146,7 +146,9 @@
             subtotal[cont] = (cantidad * precio_compra);
             total = total + subtotal[cont];
 
-            var fila = '<tr class="selected" id="fila' + cont + '"> <td><button type="button" class="btn btn-warning" onclick="eliminar(' + cont + ')";>X</button></td><td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + idarticulo +
+            var fila = '<tr class="selected" id="fila' + cont + 
+                '"><td><button type="button" class="btn btn-warning" onclick="eliminar(' + cont + 
+                ')";>X</button></td><td><input type="hidden" name="idarticulo[]" value="' + idarticulo + '">' + idarticulo +
                 '</td><td><input type="number" name="cantidad[]" value="' + cantidad +
                 '"></td> <td><input type="number" name="precio_compra[]" value="' + precio_compra +
                 '"></td> <td> <input type="number" name="precio_venta[]" value="' + precio_venta +
