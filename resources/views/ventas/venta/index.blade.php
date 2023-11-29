@@ -5,12 +5,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">LISTADO DE INGRESOS</h1>
+                <h1 class="m-0">LISTADO DE VENTAS</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-                    <li class="breadcrumb-item active">Ingresos</li>
+                    <li class="breadcrumb-item active">Ventas</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="col-xl-12">
-                        <form action="{{ route('ingreso.index') }}" method="get">
+                        <form action="{{ route('venta.index') }}" method="get">
 
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -38,7 +38,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <div class="input-group mb-6">
                                         <span class="input-group-text" id="basic-addon1"><i class="bi bi-plus-circle-fill"></i></span>
-                                        <a href="{{ route('ingreso.create') }}" class="btn btn-success">Nuevo</a>
+                                        <a href="{{ route('venta.create') }}" class="btn btn-success">Nueva</a>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Fecha</th>
-                                    <th>Proveedor</th>
+                                    <th>Cliente</th>
                                     <th>Comprobante</th>
                                     <th>Impuesto</th>
                                     <th>Total</th>
@@ -64,26 +64,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($ingresos as $ing)
+                                @foreach ($ventas as $ven)
                                 <tr>
                                     <td>
-                                        <a href="{{route('ingreso.show', $ing->id_ingreso)}}" class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
+                                        <a href="{{route('venta.show', $ven->id_venta)}}" class="btn btn-warning btn-sm"><i class="fas fa-pen"></i></a>
                                         <!-- Button trigger for danger theme modal -->
                                         <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#"><i class="fas fa-trash-alt"></i></button>
                                     </td>
-                                    <td>{{ $ing->fecha_hora}}</td>
-                                    <td>{{ $ing->nombre}}</td>
-                                    <td>{{ $ing->tipo_comprobante.': '.$ing->num_comprobante}}</td>
-                                    <td>{{ $ing->impuesto}}</td>
-                                    <td>{{ $ing->total}}</td>
-                                    <td>{{ $ing->estado}}</td>
+                                    <td>{{ $ven->fecha_hora}}</td>
+                                    <td>{{ $ven->nombre}}</td>
+                                    <td>{{ $ven->tipo_comprobante.': '.$ven->num_comprobante}}</td>
+                                    <td>{{ $ven->impuesto}}</td>
+                                    <td>{{ $ven->total_venta}}</td>
+                                    <td>{{ $ven->estado}}</td>
 
                                 </tr>
                                 
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $ingresos->links() }}
+                        {{ $ventas->links() }}
                     </div>
                 </div>
             </div>

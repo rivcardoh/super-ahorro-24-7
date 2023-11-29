@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-11-2023 a las 22:06:34
+-- Tiempo de generación: 29-11-2023 a las 22:23:49
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -57,6 +57,27 @@ CREATE TABLE `detalle_ingreso` (
   `precio_venta` decimal(11,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_ingreso`
+--
+
+INSERT INTO `detalle_ingreso` (`id_detalle_ingreso`, `id_ingreso`, `id_producto`, `cantidad`, `precio_compra`, `precio_venta`) VALUES
+(2, 20, 10, 2, '2.00', '2.00'),
+(3, 20, 11, 2, '33.00', '2.00'),
+(4, 21, 12, 44, '44.00', '4.00'),
+(5, 21, 11, 44, '44.00', '4.00');
+
+--
+-- Disparadores `detalle_ingreso`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_ingresostock` AFTER INSERT ON `detalle_ingreso` FOR EACH ROW BEGIN
+UPDATE productos SET stock = stock + New.cantidad
+WHERE id_producto=New.id_producto;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -68,9 +89,17 @@ CREATE TABLE `detalle_venta` (
   `id_venta` int(11) DEFAULT NULL,
   `id_producto` int(11) DEFAULT NULL,
   `cantidad` int(11) DEFAULT NULL,
-  `precio` decimal(11,2) DEFAULT NULL,
+  `precio_venta` decimal(11,2) DEFAULT NULL,
   `descuento` decimal(11,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`id_detalle_venta`, `id_venta`, `id_producto`, `cantidad`, `precio_venta`, `descuento`) VALUES
+(1, 13, 12, 2, '4.00', '0.00'),
+(2, 14, 12, 33, '4.00', '0.00');
 
 -- --------------------------------------------------------
 
@@ -87,6 +116,15 @@ CREATE TABLE `ingreso` (
   `impuesto` decimal(10,2) DEFAULT NULL,
   `estado` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ingreso`
+--
+
+INSERT INTO `ingreso` (`id_ingreso`, `id_proveedor`, `tipo_comprobante`, `num_comprobante`, `fecha_hora`, `impuesto`, `estado`) VALUES
+(19, 4, 'ASD', '1123', '2023-11-29 10:24:46', '13.00', 'A'),
+(20, 4, 'AA', '111', '2023-11-29 14:29:52', '13.00', 'A'),
+(21, 4, 'AT', '45', '2023-11-29 14:30:33', '13.00', 'A');
 
 -- --------------------------------------------------------
 
@@ -137,8 +175,9 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `id_categoria`, `codigo`, `nombre`, `stock`, `descripcion`, `imagen`, `estado`) VALUES
-(9, 1, '22', 'Lapizz', 1, 'super lapiz', NULL, 'Activo'),
-(10, 1, '211aas', 'Prueba', 2, 'asddasda', NULL, 'Activo');
+(10, 1, '211aas', 'Prueba', 4, 'asddasda', NULL, 'Activo'),
+(11, 1, '112344', 'Computadora', 49, 'Cosas', NULL, 'Activo'),
+(12, 2, '2', 'Prueba', 66, '23', 'prueba.jpg', 'Activo');
 
 -- --------------------------------------------------------
 
@@ -156,6 +195,15 @@ CREATE TABLE `venta` (
   `total_venta` decimal(11,2) DEFAULT NULL,
   `estado` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `venta`
+--
+
+INSERT INTO `venta` (`id_venta`, `id_cliente`, `tipo_comprobante`, `num_comprobante`, `fecha_hora`, `impuesto`, `total_venta`, `estado`) VALUES
+(10, 3, 'qeqw', '33', '2023-11-29 16:49:31', '13.00', '333.00', 'A'),
+(13, 1, 'E', '22', '2023-11-29 17:10:55', '13.00', '333.00', 'A'),
+(14, 3, 'SS222', '32332', '2023-11-29 17:18:38', '13.00', NULL, 'A');
 
 --
 -- Índices para tablas volcadas
@@ -179,7 +227,9 @@ ALTER TABLE `detalle_ingreso`
 -- Indices de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  ADD PRIMARY KEY (`id_detalle_venta`);
+  ADD PRIMARY KEY (`id_detalle_venta`),
+  ADD KEY `id_venta` (`id_venta`,`id_producto`),
+  ADD KEY `id_producto_detven` (`id_producto`);
 
 --
 -- Indices de la tabla `ingreso`
@@ -205,7 +255,8 @@ ALTER TABLE `productos`
 -- Indices de la tabla `venta`
 --
 ALTER TABLE `venta`
-  ADD PRIMARY KEY (`id_venta`);
+  ADD PRIMARY KEY (`id_venta`),
+  ADD KEY `id_cliente` (`id_cliente`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -221,19 +272,19 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `detalle_ingreso`
 --
 ALTER TABLE `detalle_ingreso`
-  MODIFY `id_detalle_ingreso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `id_detalle_venta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
@@ -245,13 +296,13 @@ ALTER TABLE `persona`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restricciones para tablas volcadas
@@ -265,6 +316,13 @@ ALTER TABLE `detalle_ingreso`
   ADD CONSTRAINT `id_producto_det_ing` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  ADD CONSTRAINT `id_producto_detven` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `id_venta_detven` FOREIGN KEY (`id_venta`) REFERENCES `venta` (`id_venta`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
@@ -275,6 +333,12 @@ ALTER TABLE `ingreso`
 --
 ALTER TABLE `productos`
   ADD CONSTRAINT `id_categoria_producto` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id_categoria`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD CONSTRAINT `id_cliente_venta` FOREIGN KEY (`id_cliente`) REFERENCES `persona` (`id_persona`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -43,7 +43,7 @@ class IngresoController extends Controller
         $personas = DB::table('persona')->where('tipo_persona', '=', 'Proveedor')->get();
         $ingreso = Ingreso::all();
         $productos = DB::table('productos as p')
-            ->select(DB::raw('CONCAT(p.codigo, " ", p.nombre)AS Articulo'), 'p.id_producto', 'p.stock')
+            ->select(DB::raw('CONCAT(p.codigo, " ", p.nombre, " ", p.stock)AS Articulo'), 'p.id_producto', 'p.stock')
             ->where('p.estado', '=', 'Activo')
             ->get();
         return view("compras.ingreso.create", ["personas" => $personas, "productos" => $productos, "ingreso" => $ingreso]);
@@ -109,9 +109,9 @@ class IngresoController extends Controller
             ->first();
 
         $detalles = DB::table('detalle_ingreso as d')
-            ->join('producto as p', 'd.id_producto', '=', 'p.id_producto')
-            ->select('a.nombre as producto', 'd.cantidad', 'd.precio_compra', 'd.precio_venta')
-            ->where('d.ingreso', '=', $id)
+            ->join('productos as p', 'd.id_producto', '=', 'p.id_producto')
+            ->select('p.nombre as producto', 'd.cantidad', 'd.precio_compra', 'd.precio_venta')
+            ->where('d.id_ingreso', '=', $id)
             ->get();
         return view("compras.ingreso.show", ["ingreso" => $ingreso, "detalles" => $detalles]);
     }
