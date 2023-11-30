@@ -44,12 +44,6 @@
                             <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese la descripcion">
                         </div>
                     </div>
-                    <div class="col-md-6 co-12">
-                        <div class="form-group">
-                            <label for="imagen">Imagen</label>
-                            <input type="file" class="form-control" name="imagen" id="imagen">
-                        </div>
-                    </div>
                 </div>
                 <div class="card-footer">
                     <div>
