@@ -64,6 +64,7 @@ class VentaController extends Controller
             $ventas->num_comprobante = $request->get('num_comprobante');
             $ventas->fecha_hora = Carbon::now('America/La_Paz')->toDateTimeString();
             $ventas->impuesto = '13';
+            $ventas->total_venta = $request->get('total_venta');
             $ventas->estado = 'A';
             $ventas->save();
             
@@ -112,15 +113,15 @@ class VentaController extends Controller
     public function show( $id)
     {
         $ventas = DB::table('venta as v')
-            ->join('persona as p', 'v.id_vliente', '=', 'p.id_persona')
-            ->join('detalle_venta as dv', 'v.id_ingreso', '=', 'dv.id_venta')
+            ->join('persona as p', 'v.id_cliente', '=', 'p.id_persona')
+            ->join('detalle_venta as dv', 'v.id_venta', '=', 'dv.id_venta')
             ->select('v.id_venta', 'v.fecha_hora', 'p.nombre', 'v.tipo_comprobante', 'v.num_comprobante', 'v.impuesto', 'v.estado', 'v.total_venta' )
             ->where('v.id_venta', '=', $id)
             ->first();
 
         $detalles = DB::table('detalle_venta as d')
             ->join('productos as p', 'd.id_producto', '=', 'p.id_producto')
-            ->select('p.nombre as producto', 'd.cantidad', 'd.precio_compra', 'd.precio_venta')
+            ->select('p.nombre as producto', 'd.cantidad', 'd.descuento', 'd.precio_venta')
             ->where('d.id_venta', '=', $id)
             ->get();
         return view("ventas.venta.show", ["ventas" => $ventas, "detalles" => $detalles]);
