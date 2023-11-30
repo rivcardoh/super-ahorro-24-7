@@ -39,7 +39,7 @@ class VentaController extends Controller
      */
     public function create()
     {
-        $personas = DB::table('persona')->where('tipo_persona', '=', 'Cliente')->get();
+        $personas = DB::table('persona')->where('tipo_persona', '=', 'Cliente' )->where('estado', '=', '1')->get();
         $productos = DB::table('productos as p')
             ->join('detalle_ingreso as di', 'di.id_producto', '=', 'p.id_producto')
             ->select(DB::raw('CONCAT(p.codigo, " ", p.nombre, " ", p.stock)AS Articulo'), 'p.id_producto', 'p.stock', DB::raw('avg(di.precio_venta)as precio_promedio'))

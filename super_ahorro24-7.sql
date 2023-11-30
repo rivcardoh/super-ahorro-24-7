@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-11-2023 a las 22:23:49
--- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.2.0
+-- Tiempo de generación: 30-11-2023 a las 04:53:48
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,7 +40,7 @@ CREATE TABLE `categoria` (
 
 INSERT INTO `categoria` (`id_categoria`, `categoria`, `descripcion`, `estado`) VALUES
 (1, 'Cat 1', 'De todo', 1),
-(2, 'Ropa', 'Ropas', 1);
+(2, 'Ropa', 'Ropas', 0);
 
 -- --------------------------------------------------------
 
@@ -62,10 +62,12 @@ CREATE TABLE `detalle_ingreso` (
 --
 
 INSERT INTO `detalle_ingreso` (`id_detalle_ingreso`, `id_ingreso`, `id_producto`, `cantidad`, `precio_compra`, `precio_venta`) VALUES
-(2, 20, 10, 2, '2.00', '2.00'),
-(3, 20, 11, 2, '33.00', '2.00'),
-(4, 21, 12, 44, '44.00', '4.00'),
-(5, 21, 11, 44, '44.00', '4.00');
+(2, 20, 10, 2, 2.00, 2.00),
+(3, 20, 11, 2, 33.00, 2.00),
+(4, 21, 12, 44, 44.00, 4.00),
+(5, 21, 11, 44, 44.00, 4.00),
+(6, 22, 11, 33, 2.00, 2.00),
+(7, 23, 12, 2, 22.00, 2.00);
 
 --
 -- Disparadores `detalle_ingreso`
@@ -98,8 +100,26 @@ CREATE TABLE `detalle_venta` (
 --
 
 INSERT INTO `detalle_venta` (`id_detalle_venta`, `id_venta`, `id_producto`, `cantidad`, `precio_venta`, `descuento`) VALUES
-(1, 13, 12, 2, '4.00', '0.00'),
-(2, 14, 12, 33, '4.00', '0.00');
+(1, 13, 12, 2, 4.00, 0.00),
+(2, 14, 12, 33, 4.00, 0.00),
+(3, 15, 12, 22, 4.00, 0.00),
+(4, 16, 12, 16, 4.00, 0.00),
+(5, 16, 10, 3, 2.00, 1.00),
+(6, 17, 12, 3, 4.00, 0.02),
+(7, 17, 10, 2, 2.00, 0.06),
+(8, 18, 11, 9, 3.00, 0.00),
+(9, 19, 11, 44, 2.67, 0.00);
+
+--
+-- Disparadores `detalle_venta`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_ventasstock` AFTER INSERT ON `detalle_venta` FOR EACH ROW BEGIN
+    UPDATE productos SET stock = stock - NEW.cantidad
+    WHERE id_producto = NEW.id_producto;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -122,9 +142,11 @@ CREATE TABLE `ingreso` (
 --
 
 INSERT INTO `ingreso` (`id_ingreso`, `id_proveedor`, `tipo_comprobante`, `num_comprobante`, `fecha_hora`, `impuesto`, `estado`) VALUES
-(19, 4, 'ASD', '1123', '2023-11-29 10:24:46', '13.00', 'A'),
-(20, 4, 'AA', '111', '2023-11-29 14:29:52', '13.00', 'A'),
-(21, 4, 'AT', '45', '2023-11-29 14:30:33', '13.00', 'A');
+(19, 4, 'ASD', '1123', '2023-11-29 10:24:46', 13.00, 'A'),
+(20, 4, 'AA', '111', '2023-11-29 14:29:52', 13.00, 'A'),
+(21, 4, 'AT', '45', '2023-11-29 14:30:33', 13.00, 'A'),
+(22, 4, 'DDFF1', '3', '2023-11-29 23:14:18', 13.00, 'A'),
+(23, 5, '121', '11', '2023-11-29 23:51:01', 13.00, 'A');
 
 -- --------------------------------------------------------
 
@@ -176,8 +198,8 @@ CREATE TABLE `productos` (
 
 INSERT INTO `productos` (`id_producto`, `id_categoria`, `codigo`, `nombre`, `stock`, `descripcion`, `imagen`, `estado`) VALUES
 (10, 1, '211aas', 'Prueba', 4, 'asddasda', NULL, 'Activo'),
-(11, 1, '112344', 'Computadora', 49, 'Cosas', NULL, 'Activo'),
-(12, 2, '2', 'Prueba', 66, '23', 'prueba.jpg', 'Activo');
+(11, 1, '112344', 'Computadora', 29, 'Cosas', NULL, 'Activo'),
+(12, 2, '2', 'Prueba', 68, '23', 'prueba.jpg', 'Activo');
 
 -- --------------------------------------------------------
 
@@ -201,9 +223,14 @@ CREATE TABLE `venta` (
 --
 
 INSERT INTO `venta` (`id_venta`, `id_cliente`, `tipo_comprobante`, `num_comprobante`, `fecha_hora`, `impuesto`, `total_venta`, `estado`) VALUES
-(10, 3, 'qeqw', '33', '2023-11-29 16:49:31', '13.00', '333.00', 'A'),
-(13, 1, 'E', '22', '2023-11-29 17:10:55', '13.00', '333.00', 'A'),
-(14, 3, 'SS222', '32332', '2023-11-29 17:18:38', '13.00', NULL, 'A');
+(10, 3, 'qeqw', '33', '2023-11-29 16:49:31', 13.00, 333.00, 'A'),
+(13, 1, 'E', '22', '2023-11-29 17:10:55', 13.00, 333.00, 'A'),
+(14, 3, 'SS222', '32332', '2023-11-29 17:18:38', 13.00, NULL, 'A'),
+(15, 1, 'DDFF1', '332', '2023-11-29 22:09:49', 13.00, NULL, 'A'),
+(16, 3, 'DDFF1', '6565', '2023-11-29 22:12:58', 13.00, 69.00, 'A'),
+(17, 1, 'dd', '22', '2023-11-29 22:14:26', 13.00, 15.92, 'A'),
+(18, 1, 'AS', '111111', '2023-11-29 22:36:32', 13.00, 27.00, 'A'),
+(19, 1, 'DDFF1', '33', '2023-11-29 23:14:53', 13.00, 117.33, 'A');
 
 --
 -- Índices para tablas volcadas
@@ -272,19 +299,19 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `detalle_ingreso`
 --
 ALTER TABLE `detalle_ingreso`
-  MODIFY `id_detalle_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_detalle_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `id_detalle_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_detalle_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
 --
 ALTER TABLE `ingreso`
-  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
@@ -302,7 +329,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Restricciones para tablas volcadas

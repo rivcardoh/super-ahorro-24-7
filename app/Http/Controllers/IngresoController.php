@@ -40,7 +40,7 @@ class IngresoController extends Controller
      */
     public function create()
     {
-        $personas = DB::table('persona')->where('tipo_persona', '=', 'Proveedor')->get();
+        $personas = DB::table('persona')->where('tipo_persona', '=', 'Proveedor')->where('estado', '=', '1')->get();
         $ingreso = Ingreso::all();
         $productos = DB::table('productos as p')
             ->select(DB::raw('CONCAT(p.codigo, " ", p.nombre, " ", p.stock)AS Articulo'), 'p.id_producto', 'p.stock')
